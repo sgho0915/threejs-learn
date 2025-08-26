@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js 큐브</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.138.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.138.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Three.js가 렌더링할 Canvas -->
+    <canvas class="testCanvas"></canvas>
+
+    <!-- Scene, Cube, Camera 조작 등 작성된 main.js 실행 -->
+    <!-- import 구문 사용하려면 type="module" 속성 추가 -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
