@@ -1,6 +1,7 @@
-# Chapter 1: 조명, 그림자, 인터랙티브 컨트롤
+# Chapter 2: 조명, 그림자, 인터랙티브 컨트롤
 
-이 챕터에서는 Chapter 1에서 만든 기본 씬에 더해 Three.js 조명들의 특성을 이해하고, 그림자를 구현합니다. lil-gui 라이브러리를 이용해 씬의 조명 파라미터를 실시간으로 조작해 조명 속성들의 효과를 이해합니다.
+이 챕터에서는 Chapter 1에서 만든 기본 씬에 더해 Three.js 조명들의 특성을 이해하고, 그림자를 구현한다.
+lil-gui 라이브러리를 이용해 씬의 조명 파라미터를 실시간으로 조작해 조명 속성들의 효과를 확인한다.
 
 **🚀 Demo:** [https://sgho0915.github.io/threejs-learn/02-lights-shadow-control/](https://sgho0915.github.io/threejs-learn/02-lights-shadow-control/)
 
@@ -25,191 +26,194 @@
 | **`DirectionalLight`** | 태양광처럼 한 방향으로 내리쬐는 평행광. 그림자를 만듦. | Directional Light | 야외 전역 조명 |
 | **`PointLight`** | 전구처럼 한 점에서 사방으로 퍼지는 빛. 그림자를 만듦. | Point Light | 촛불, 실내등 |
 | **`SpotLight`** | 손전등처럼 원뿔 형태로 특정 지점을 비추는 빛. 그림자를 만듦. | Spot Light | 무대 조명 |
------
 
-## 2\. 프로젝트 파일 구성
+### 코드 구현
 
-| 파일명 | 역할 | 비유 |
-| :--- | :--- | :--- |
-| **`index.html`** | 웹페이지의 뼈대 구성. 3D 그래픽이 그려질 `<canvas>`를 배치하고 JS 파일을 불러옴. | 뼈대 |
-| **`style.css`** | 웹페이지의 디자인 담당. `<canvas>`를 화면에 꽉 채우는 등의 스타일 정의. | 옷 |
-| **`main.js`** | Three.js 로직을 작성하는 핵심 파일. 씬을 만들고 객체를 움직이는 등의 모든 동작을 구현. | 뇌 |
+```JavaScript
+// AmbientLight (씬 전체에 은은하게 깔리는 환경광. 그림자를 만들지 않음)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);     // 색상, 강도
+scene.add(ambientLight);
 
------
+// DirectionalLight (태양광 처럼 한 방향으로 내리 쬐는 빛. 그림자를 만들 수 있음)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(3,4,5);   // 빛의 위치
+directionalLight.castShadow = true;     // directionalLight가 그림자를 만들도록 설정
+directionalLight.shadow.mapSize.width = 1024;   // 그림자 맵 해상도 가로 설정(기본값은 512)
+directionalLight.shadow.mapSize.height = 1024;  // 그림자 맵 해상도 세로 설정(기본값은 512)
+scene.add(directionalLight);
+const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1); // DirectionalLight의 위치와 방향을 시각적으로 보여주는 헬퍼
+scene.add(directionalLightHelper);
 
-## 3\. 코드 분석
+// PointLight (전구처럼 한 점에서 사방으로 퍼져나가는 빛. Unity의 PointLight와 동일)
+const pointLight = new THREE.PointLight(0xffcc00, 10);
+pointLight.position.set(2, 2, 2);
+pointLight.castShadow = true;
+pointLight.visible = false; // 처음엔 보이지 않게 설정
+scene.add(pointLight);
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
+pointLightHelper.visible = false; // 처음엔 보이지 않게 설정
+scene.add(pointLightHelper);
 
-### `index.html` - 뼈대 세우기
-
-```html
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>Three.js 큐브</title>
-    <link rel="stylesheet" href="style.css">
-
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.138.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.138.0/examples/jsm/"
-            }
-        }
-    </script>
-</head>
-<body>
-    <!-- Three.js가 렌더링할 Canvas -->
-    <canvas class="testCanvas"></canvas>
-
-    <!-- Scene, Cube, Camera 조작 등 작성된 main.js 실행 -->
-    <!-- import 구문 사용하려면 type="module" 속성 추가 -->
-    <script type="module" src="main.js"></script>
-</body>
-</html>
+// SpotLight (손전등처럼 원뿔 형태로 특정 방향을 비추는 빛. Unity의 SpotLight와 동일)
+const spotLight = new THREE.SpotLight(0x00ffff, 100, 10, Math.PI * 0.1, 0.2, 1);
+spotLight.position.set(0, 4, 3);
+spotLight.castShadow = true;
+spotLight.visible = false;
+scene.add(spotLight);
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+spotLightHelper.visible = false;
+scene.add(spotLightHelper);
+scene.add(spotLight.target);    // SpotLight는 빛이 향하는 타겟도 씬에 추가해야 헬퍼가 제대로 보임
 ```
-
-`<body>` 태그 안에는 3D 그래픽이 그려질 도화지인 `<canvas>`와 실제 로직이 담긴 `main.js`를 불러오는 `<script>` 태그가 위치한다. `<head>` 안의 `importmap`은 `main.js`가 `import * as THREE from 'three'` 코드를 에러 없이 실행할 수 있도록 도와주는 역할을 한다.
 
 ----
 
-### `style.css` - 디자인 입히기
+## 2\.  그림자 (Shadows)
+Three.js에서 그림자를 구현하려면 아래 조건을 만족해야 한다.
 
-```css
-/* 모든 요소에 대한 전역적인 기본 설정 */
-* {
-    margin: 0;
-    padding: 0;
-}
-
-/* testCanvas에 대한 개별 설정 */
-
-/* position : 브라우저 웹페이지에서 요소의 배치 방식을 결정하는 속성
-- static(기본값) : HTML 코드에 작성된 순서 그대로, 다른 요소와의 흐름에 맞춰 자연스럽게 배치됨. top, left 같은 위치 속성이 적용되지 않음
-- relative : static 상태의 원래 위치를 기준으로 top, left 값만큼 상대적으로 이동. 요소가 이동해도 원래 있던 공간은 그대로 차지함
-- absolute : 가장 가까운 position 속성을 가진 부모 요소를 기준으로 위치 결정. 그런 부모가 없다면 웹페이지 최상단(body)이 기준이 됨. (Unity Rect Transform Anchor와 비슷하게 부모 좌표계에 따라 움직임)
-- fixed :  부모 요소와 상관 없이 무조건 브라우저 화면(ViewPort)을 기준으로 위치가 고정됨. 스크롤을 내려도 항상 같은 자리에 보임. (Unity Canvas의 Screen Space- Overlay랑 비슷)
-- sticky : 평소에는 relative 처럼 동작하다가 스크롤 시 정해진 위치에 닿으면 fixed 처럼 고정되는 하이브리드 속성.(ex:스크롤 내려도 상단에 붙어있는 메뉴바) */
-
-/* outline : 요소의 테두리 바깥쪽에 그려지는 선
-- none : 외곽선 표시 안함
-- solid : 실선으로 표시 (ex: outline: 2px solid blue;)
-- dotted : 점선으로 표시
-- dashed : 짧은 선이 이어진 형태로 표시 */
-
-/* display : 레이아웃, 정렬
-- 요소가 화면에 어떻게 보여지고 다른 요소와 어떻게 상호작용할지 결정(block, inline, flex) */
-
-/* width, height : 요소 너비, 높이 지정 */
-
-/* margin, padding : 요소 바깥 여백, 안쪽 여백 설정 */
-
-/* background-color : 요소 배경 색상 지정 */
-
-/* border : 요소 테두리 설정 (ex: border: 1px solid black;) */
-
-/* font-size : 글자 크기 조절 */
-
-.testCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    outline: none;
-}
+1.  **렌더러 설정**: 렌더러에게 그림자 계산을 하도록 마스터 스위치를 켠다.
+```JavaScript
+renderer.shadowMap.enabled = true;
 ```
 
-`*` 선택자로 모든 기본 여백을 제거해 브라우저 간 차이를 없애고, `.testCanvas`를 `position: fixed`로 설정해 화면 전체를 덮는 배경처럼 만들어준다.
+2.  **빛 설정**: 그림자를 생성할 빛 객체에 castShadow 속성을 활성화한다.
+```JavaScript
+directionalLight.castShadow = true;
+```
 
-----
+3.  **그림자를 만드는 객체 설정**: 그림자를 드리울 Mesh 객체에 castShadow 속성을 활성화한다.
+```JavaScript
+cube.castShadow = true;
+```
 
-### `main.js` - 생명 불어넣기
+4.  **그림자를 받는 객체 설정**: 그림자가 그려질 Mesh 객체(바닥 등)에 receiveShadow 속성을 활성화한다.
+```JavaScript
+plane.receiveShadow = true;
+```
+
+### 그림자 품질 개선
+기본 그림자는 해상도가 낮거나 경계선이 날카로울 수 있어 아래 속성으로 품질을 개선할 수 있다.
+
+* `light.shadow.mapSize`: 그림자를 그리는 데 사용하는 텍스처의 해상도를 높여 선명하게 만든다. (예: 1024x1024)
+* `renderer.shadowMap.type`: 그림자의 외곽선을 부드럽게 처리한다. (THREE.PCFSoftShadowMap)
+
+-----
+
+## 3\. GUI 컨트롤 (lil-gui)
+
+`lil-gui`는 Three.js 프로젝트에서 변수를 실시간으로 조작하는 UI를 쉽게 만들 수 있도록 도와주는 라이브러리입니다. 이를 통해 씬을 '디지털 실험실'처럼 활용할 수 있습니다.
+
+### \#\#\# GUI 기본 사용법
+
+1.  **생성**: `new GUI()`로 컨트롤 패널 객체를 생성합니다.
+2.  **컨트롤 추가**: `.add(객체, '속성명')` 메소드로 UI 컨트롤을 추가합니다. 체이닝 방식으로 `.min()`, `.max()`, `.step()`, `.name()` 등의 옵션을 설정할 수 있습니다.
+3.  **폴더 및 드롭다운**: `.addFolder()`로 컨트롤들을 그룹화하고, `.add()`에 배열을 넘겨주어 선택 메뉴를 만들 수 있습니다.
+
+### \#\#\# 코드 구현
 
 ```javascript
-// THREE : using UnityEngine; 과 동일한 의미. 내부에 Scene, Vector3, Quaternion, Mesh 등이 담겨있음
-import * as THREE from 'three';
-import { OrbitControls } from 'https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js'; // OrbitControl을 사용하기 위함
+import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm';
+const gui = new GUI();
 
-// 1단계 : Scene 구성
-const scene = new THREE.Scene();                    // 3D 가상 월드 생성 (Unity New Scene과 동일)
+// 조명 선택을 위한 객체
+const lightParams = {lightType: "Directional"};
 
-// cube 추가
-const geometry = new THREE.BoxGeometry(1, 1, 1);    // 물체의 모양정보를 정의 (Unity MeshFilter 컴포넌트의 Mesh 개념)
-const material = new THREE.MeshBasicMaterial({      // 물체의 표면 재질 정의. Basic은 빛의 영향을 받지 않는 단순 재질 (Unity Unlit 셰이더와 비슷)
-    color: 0x6699FF,    // 파란색 계열
-    roughness: 0.5,     // 표면 거칠기
-    metalness: 0.5      // 금속성
- }); 
-const cube = new THREE.Mesh(geometry, material);    // 모양 정보와 재질을 합쳐 완전한 3D 객체를 만듬. (Unity MeshFilter와 MeshRenderer 컴포넌트를 가진 GameObject 개념)
-scene.add(cube);                                    // 만들어진 객체를 Scene에 추가 (Unity Hierarchy에 올리는 것과 비슷)
+// 각 조명별 GUI 설정을 담을 폴더 생성
+const directionalLightFolder = gui.addFolder('Directional Light');
+const pointLightFolder = gui.addFolder('Point Light');
+const spotLightFolder = gui.addFolder('Spot Light');
+pointLightFolder.close();   // 처음엔 닫아둠
+spotLightFolder.close();    // 처음엔 닫아둠
 
-// plane 추가
-const planeGeometry = new THREE.PlaneGeometry(10,10);
-const planeMatrial = new THREE.MeshStandardMaterial({ color: 0xeeeeee });
-const plane = new THREE.Mesh(planeGeometry, planeMatrial);
-plane.rotation.x = -Math.PI / 2;    // 바닥처럼 보이도록 90도 눕힘
-plane.position.y = -1;
-scene.add(plane);
+// Directional Light 컨트롤
+directionalLightFolder.add(directionalLight, 'intensity').min(0).max(10).step(0.01).name('빛 강도');
+directionalLightFolder.add(directionalLight.position, 'x').min(-10).max(10).step(0.01).name('빛 X위치');
+directionalLightFolder.add(directionalLight.position, 'y').min(-10).max(10).step(0.01).name('빛 Y위치');
+directionalLightFolder.add(directionalLight.position, 'z').min(-10).max(10).step(0.01).name('빛 Z위치');
 
-// 화면 크기를 가져옴
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-};
+// Point Light 컨트롤
+pointLightFolder.add(pointLight, 'intensity').min(0).max(10).step(0.01).name('빛 강도');
+pointLightFolder.add(pointLight, 'distance').min(0).max(10).step(0.01).name('거리 (Distance)');
+pointLightFolder.add(pointLight, 'decay').min(0).max(5).step(0.01).name('감쇠율 (Decay)');
+pointLightFolder.add(pointLight.position, 'x').min(-10).max(10).step(0.01).name('빛 X위치');
+pointLightFolder.add(pointLight.position, 'y').min(-10).max(10).step(0.01).name('빛 Y위치');
+pointLightFolder.add(pointLight.position, 'z').min(-10).max(10).step(0.01).name('빛 Z위치');
 
+// Spot Light 컨트롤
+spotLightFolder.add(spotLight, 'intensity').min(0).max(10).step(0.01).name('빛 강도');
+spotLightFolder.add(spotLight, 'distance').min(0).max(20).step(0.1).name('거리 (Distance)');
+spotLightFolder.add(spotLight, 'decay').min(0).max(5).step(0.01).name('감쇠율 (Decay)');
+spotLightFolder.add(spotLight, 'angle').min(0).max(Math.PI / 4).step(0.01).name('조사 범위')
+spotLightFolder.add(spotLight, 'penumbra').min(0).max(1).step(0.01).name('빛 가장자리 부드러움');
+spotLightFolder.add(spotLight.position, 'x').min(-10).max(10).step(0.01).name('빛 X위치');
+spotLightFolder.add(spotLight.position, 'y').min(-10).max(10).step(0.01).name('빛 Y위치');
+spotLightFolder.add(spotLight.position, 'z').min(-10).max(10).step(0.01).name('빛 Z위치');
+spotLightFolder.add(spotLight.target.position, 'x').min(-10).max(10).step(0.01).name('타겟 X');
+spotLightFolder.add(spotLight.target.position, 'y').min(-10).max(10).step(0.01).name('타겟 Y');
+spotLightFolder.add(spotLight.target.position, 'z').min(-10).max(10).step(0.01).name('타겟 Z');
 
-// 2단계 : Camera 설정
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height); // 원근감이 있는 카메라 생성 (Unity Perspective Camera와 비슷)
-camera.position.z = 5;      // 카메라를 뒤로 3만큼 이동
-scene.add(camera);          // 카메라를 Scene에 추가
+// 공통 컨트롤
+gui.addColor(material, 'color').name('큐브 색상');
+gui.add(material, 'metalness').min(0).max(1).step(0.01).name('금속성');
+gui.add(material, 'roughness').min(0).max(1).step(0.01).name('거칠기');
 
+// 조명 타입 선택 드롭다운 메뉴
+gui.add(lightParams, 'lightType', ['Directional', 'Point', 'Spot']).name('조명 종류')
+.onChange(value =>{
+    // 모든 조명 끔
+    directionalLight.visible = false;
+    directionalLightHelper.visible = false;
+    pointLight.visible = false;
+    pointLightHelper.visible = false;
+    spotLight.visible = false;
+    spotLightHelper.visible = false;
 
-// 3단계 : 렌더러 준비
-const canvas = document.querySelector('.testCanvas');   // HTML에서 씬을 구성할 canvas 요소를 찾아옴 (Unity C# 스크립트에서 public 변수를 inspector에 할당하는 것과 비슷)
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-const renderer = new THREE.WebGLRenderer({      // WebGL 기술을 사용해 3D 그래픽을 그려주는 렌더러를 생성
-    canvas: canvas,
-    antialias: true     // 티어링 현상을 부드럽게 처리
-});
-renderer.setSize(sizes.width, sizes.height);    // 렌더링 해상도 설정(Unity GameView의 해상도 설정과 비슷)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    // 모든 조명 GUI 폴더를 닫음
+    directionalLightFolder.close();
+    pointLightFolder.close();
+    spotLightFolder.close();
 
+    // 선택한 조명과 GUI 폴더만 활성화
+    if (value === 'Directional') {
+            directionalLight.visible = true;
+            directionalLightHelper.visible = true;
+            directionalLightFolder.open();
+        } else if (value === 'Point') {
+            pointLight.visible = true;
+            pointLightHelper.visible = true;
+            pointLightFolder.open();
+        } else if (value === 'Spot') {
+            spotLight.visible = true;
+            spotLightHelper.visible = true;
+            spotLightFolder.open();
+        }
+})
 
-// 4단계 : 애니메이션 루프(매 프레임 수행)
-function animate() {    // 반복적으로 실행될 로직을 담는 함수(예약어 아님)
+// 애니메이션 루프(매 프레임 수행)
+function animate() {   
+    requestAnimationFrame(animate); 
 
-    // 프레임 업데이트에 setInterval을 사용하지 않고 requestAnimationFrame을 사용하는 이유는 다른 탭 이동, 브라우저 최소화 상태에서는 requestAnimationFrame 실행 횟수를 자동으로 줄이거나 멈춰 최적화와 효율성을 챙김
-    // requestAnimationFrame은 브라우저 실제 렌더링 주기와 동기화 되어있음. 따라서 모니터 주사율에 가장 이상적으로 맞춰 티어링 현상 없이 부드러운 애니메이션 보장
-    requestAnimationFrame(animate);     // animate 함수의 모든 코드를 실행한 뒤, 브라우저가 다음 화면을 그리기 직전 최적의 타이밍에 animate 함수를 다시 호출할 것을 예약하는 함수
+    controls.update();    
+    directionalLightHelper.update();
+    pointLightHelper.update();
+    spotLightHelper.update();
 
-    controls.update();      // OrbitControls의 감속 효과를 사용하려면 매 프레임 업데이트 필요
+    // cube.rotation.x += 0.01;
+    // cube.rotation.y += 0.01;
 
-    // 큐브를 회전시킵니다.
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-
-    renderer.render(scene, camera);     // 현재 scene의 상태를 camera의 시점에서 실제로 화면에 그림 (Unity 한 프레임의 모든 Update 끝난 후 화면이 갱신되는 과정)
+    renderer.render(scene, camera); 
 }
-
-animate(); // 애니메이션 시작
-
-
-
-// 기타 THREE 요소
-
-// 재질과 조명
-// MeshStandardMaterial : PBR(물리 기반 렌더링)을 지원하는 표준 재질. 금 속성, 거칠기 등을 표현할 수 있고 조명이 반드시 필요함
-// AmbientLight : 씬 전체에 은은하게 깔리는 환경광. 그림자를 만들지 않음
-// DirectionalLight : 태양광 처럼 한 방향으로 내리 쬐는 빛. 그림자를 만들 수 있음
-
-// 사용자 입력
-// OrbitControls : 마우스로 씬을 회전, 확대/축소, 이동할 수 있게 해주는 컨트롤러
-
-// 에셋 로딩
-// GLTFLoader : .gltf 또는 .glb 형식의 3D 모델 파일을 불러오는 로더
-
-// 수학/좌표
-// THREE.Vector3 : 3차원 벡터(x,y,z)를 다루는 클래스. 위치, 방향, 크기 등을 표현
 ```
+
+-----
+
+##  추가 사항
+
+추후 다양한 오브젝트를 추가해 조명 관련 심화된 내용을 다뤄볼 예정이다.
+
+  * **텍스처 (Textures)**: 단색 재질이 아닌 이미지 텍스처(`map`, `normalMap` 등)를 적용해 객체에 디테일과 현실감을 부여
+  * **환경 맵 (Environment Map)**: HDRI 이미지를 씬의 배경과 환경광으로 사용해 객체 표면에 사실적인 반사 효과를 구현
+  * **라이트 베이킹 (Light Baking)**: 정적인 씬에서 빛과 그림자 정보를 미리 텍스처에 구워내 실시간 렌더링 부하를 줄이고 성능을 최적화
+  * **후처리 효과 (Post-processing)**: 렌더링된 결과물에 블룸(Bloom), 심도(Depth of Field) 등 추가적인 시각 효과를 적용해 최종 이미지의 완성도를 높임
 
 코드는 Scene, Mesh, Camera, Renderer, Animation Loop 의 5가지 단계로 구성되어 있다. 각 단계는 3D 그래픽을 렌더링하기 위한 필수적인 과정이며, 주석에 각 코드의 역할을 상세히 기록했다.
