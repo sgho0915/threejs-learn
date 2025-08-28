@@ -1,6 +1,6 @@
 # Chapter 1: 기본 3D Scene과 큐브 만들기
 
-이 챕터에서는 Three.js를 사용하기 위한 가장 기본적인 환경을 설정하고, 화면에 3D 큐브 하나를 띄우고 회전시키는 과정을 학습합니다. 모든 Three.js 프로젝트의 "Hello, World\!"와 같은 단계입니다.
+이 챕터에서는 Three.js를 사용하기 위한 가장 기본적인 환경을 설정하고, 화면에 3D 큐브 하나를 띄우고 회전시켜본다.
 
 **🚀 Demo:** [https://sgho0915.github.io/threejs-learn/01-basic-scene/](https://sgho0915.github.io/threejs-learn/01-basic-scene/)
 
