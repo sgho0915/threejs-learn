@@ -33,4 +33,4 @@
 
 ## ✍️ 관련 블로그 포스트
 
-  - **[Tistory 블로그 링크]([https://itgongbu.tistory.com/](https://itgongbu.tistory.com/category/%EA%B0%9C%EB%B0%9C/Three.js))**
+  - **[Tistory 블로그 링크](https://itgongbu.tistory.com/category/%EA%B0%9C%EB%B0%9C/Three.js)**
