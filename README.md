@@ -14,7 +14,7 @@
 | 챕터 | 주제 | 핵심 학습 내용 | 상태 | 챕터 이동 | 데모 페이지 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Chap. 01** | **기본 씬 구성** | Scene, Camera, Renderer, Mesh, `importmap` | ✅ 완료 | [이동](https://github.com/sgho0915/threejs-learn/tree/master/01-basic-scene) | [Live Demo](https://sgho0915.github.io/threejs-learn/01-basic-scene/) |
-| **Chap. 02** | **조명과 그림자** | 다양한 조명, 그림자 설정, `lil-gui` 디버깅 | ✅ 완료 |  [이동](https://github.com/sgho0915/threejs-learn/tree/master/02-lights-shadow-control) |[Live Demo](https://www.google.com/search?q=https://sgho0915.github.io/threejs-learn/02-lights-shadow-control/) |
+| **Chap. 02** | **조명과 그림자** | 다양한 조명, 그림자 설정, `lil-gui` 디버깅 | ✅ 완료 |  [이동](https://github.com/sgho0915/threejs-learn/tree/master/02-lights-shadow-control) |[Live Demo](https://sgho0915.github.io/threejs-learn/02-lights-shadow-control/) |
 | **Chap. 03** | **모델 불러오기 (GLTF)** | `GLTFLoader`, 외부 3D 모델 씬에 추가하기 | ⏳ 진행중 |||
 | **Chap. 04** | **재질과 텍스처** | `TextureLoader`, PBR 재질 심화 | 예정 |||
 | **Chap. 05** | **애니메이션** | `AnimationMixer`를 이용한 애니메이션 제어 | 예정 |||
