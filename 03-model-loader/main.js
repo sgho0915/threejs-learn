@@ -52,6 +52,15 @@ gltfLoader.load(
         // 실제 모델 데이터는 gltf.scene에 들어있음
         const model = gltf.scene;
 
+        // 모델의 모든 자식 Mesh를 순회하며 그림자 속성 설정
+        model.traverse((child) =>{
+            // 자식이 Mesh 타입인 경우에만 그림자 속성 적용
+            if(child.isMesh){
+                child.castShadow = true;    // 그림자 만들기
+                child.receiveShadow = true; // 그림자 받기
+            }
+        })
+
         // 모델 크기, 위치 조절
         model.scale.set(0.25, 0.25, 0.25);   // 모델의 X, Y, Z축 방향의 크기(Scale)를 설정
         model.position.y = 0;   // 바닥에 맞춤
