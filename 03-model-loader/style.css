@@ -1,0 +1,40 @@
+/* 모든 요소에 대한 전역적인 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* testCanvas에 대한 개별 설정 */
+
+/* position : 브라우저 웹페이지에서 요소의 배치 방식을 결정하는 속성
+- static(기본값) : HTML 코드에 작성된 순서 그대로, 다른 요소와의 흐름에 맞춰 자연스럽게 배치됨. top, left 같은 위치 속성이 적용되지 않음
+- relative : static 상태의 원래 위치를 기준으로 top, left 값만큼 상대적으로 이동. 요소가 이동해도 원래 있던 공간은 그대로 차지함
+- absolute : 가장 가까운 position 속성을 가진 부모 요소를 기준으로 위치 결정. 그런 부모가 없다면 웹페이지 최상단(body)이 기준이 됨. (Unity Rect Transform Anchor와 비슷하게 부모 좌표계에 따라 움직임)
+- fixed :  부모 요소와 상관 없이 무조건 브라우저 화면(ViewPort)을 기준으로 위치가 고정됨. 스크롤을 내려도 항상 같은 자리에 보임. (Unity Canvas의 Screen Space- Overlay랑 비슷)
+- sticky : 평소에는 relative 처럼 동작하다가 스크롤 시 정해진 위치에 닿으면 fixed 처럼 고정되는 하이브리드 속성.(ex:스크롤 내려도 상단에 붙어있는 메뉴바) */
+
+/* outline : 요소의 테두리 바깥쪽에 그려지는 선
+- none : 외곽선 표시 안함
+- solid : 실선으로 표시 (ex: outline: 2px solid blue;)
+- dotted : 점선으로 표시
+- dashed : 짧은 선이 이어진 형태로 표시 */
+
+/* display : 레이아웃, 정렬
+- 요소가 화면에 어떻게 보여지고 다른 요소와 어떻게 상호작용할지 결정(block, inline, flex) */
+
+/* width, height : 요소 너비, 높이 지정 */
+
+/* margin, padding : 요소 바깥 여백, 안쪽 여백 설정 */
+
+/* background-color : 요소 배경 색상 지정 */
+
+/* border : 요소 테두리 설정 (ex: border: 1px solid black;) */
+
+/* font-size : 글자 크기 조절 */
+
+.testCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+}
