@@ -1,6 +1,6 @@
 # Chapter 3: 3D 모델 불러오기 (GLTF Loader)
 
-Three.js 씬에 외부 3D 모델을 불러오는 방법을 학습한다. 웹 3D의 표준 포맷인 **GLTF**에 대해 이해하고, \*\*`GLTFLoader`\*\*를 사용하여 모델을 씬에 배치하는 것을 목표로 한다.
+Three.js 씬에 외부 3D 모델을 불러오는 방법을 학습한다. 웹 3D의 표준 포맷인 **GLTF**에 대해 이해하고, `GLTFLoader`를 사용하여 모델을 씬에 배치하는 것을 목표로 한다.
 
 **🚀 Live Demo:** [https://sgho0915.github.io/threejs-learn/03-model-loader/](https://sgho0915.github.io/threejs-learn/03-model-loader/)
 
