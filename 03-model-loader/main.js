@@ -53,7 +53,7 @@ gltfLoader.load(
         const model = gltf.scene;
 
         // 모델 크기, 위치 조절
-        model.scale.set(1, 1, 1);   // 모델의 X, Y, Z축 방향의 크기(Scale)를 설정
+        model.scale.set(0.25, 0.25, 0.25);   // 모델의 X, Y, Z축 방향의 크기(Scale)를 설정
         model.position.y = 0;   // 바닥에 맞춤
 
         // 씬에 모델 추가
